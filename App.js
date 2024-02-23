@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Animated, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, Animated, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { Easing } from 'react-native-reanimated';
 
 const images = [
-  require('./assets/image1.jpg'),
-  require('./assets/image2.jpg'),
-  require('./assets/image3.jpg'),
-  require('./assets/image4.jpg'),
+  { source: require('./assets/image1.jpg'), buttonPosition: 'leftTop' },
+  { source: require('./assets/image2.jpg'), buttonPosition: 'rightTop' },
+  { source: require('./assets/image3.jpg'), buttonPosition: 'leftBottom' },
+  { source: require('./assets/image4.jpg'), buttonPosition: 'rightBottom' },
 ];
 
 const FadeInOutImage = ({ source }) => {
@@ -36,6 +36,12 @@ const Dot = ({ active }) => (
   <View style={[styles.dot, active && styles.activeDot]} />
 );
 
+const ShopButton = ({ position }) => (
+  <TouchableOpacity style={[styles.shopButton, styles[position]]}>
+    <Text style={styles.shopButtonText}>SHOP</Text>
+  </TouchableOpacity>
+);
+
 const App = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -53,7 +59,8 @@ const App = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <FadeInOutImage source={images[currentIndex]} />
+      <FadeInOutImage source={images[currentIndex].source} />
+      <ShopButton position={images[currentIndex].buttonPosition} />
       <View style={styles.dotContainer}>
         {images.map((_, index) => (
           <TouchableOpacity key={index} onPress={() => handleDotPress(index)}>
@@ -81,6 +88,32 @@ const styles = StyleSheet.create({
   },
   activeDot: {
     backgroundColor: 'black',
+  },
+  shopButton: {
+    position: 'absolute',
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: 'blue',
+  },
+  leftTop: {
+    top: 0,
+    left: 0,
+  },
+  rightTop: {
+    top: 0,
+    right: 0,
+  },
+  leftBottom: {
+    bottom: 0,
+    left: 0,
+  },
+  rightBottom: {
+    bottom: 0,
+    right: 0,
+  },
+  shopButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 
