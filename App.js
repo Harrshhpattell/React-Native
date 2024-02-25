@@ -1,120 +1,41 @@
-import React, { useState, useEffect } from 'react';
-import { View, Image, Animated, TouchableOpacity, StyleSheet, Text } from 'react-native';
-import { Easing } from 'react-native-reanimated';
+import * as React from "react";
+import "react-native-gesture-handler";
+import { NavigationContainer } from "@react-navigation/native";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+// import { createStackNavigator } from "@react-navigation/stack";
+import Home from "./screens/Home";
+import Profile from "./screens/Profile";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Example from "./screens/Example";
 
-const images = [
-  { source: require('./assets/image1.jpg'), buttonPosition: 'leftTop' },
-  { source: require('./assets/image2.jpg'), buttonPosition: 'rightTop' },
-  { source: require('./assets/image3.jpg'), buttonPosition: 'leftBottom' },
-  { source: require('./assets/image4.jpg'), buttonPosition: 'rightBottom' },
-];
+const Tab = createBottomTabNavigator();
 
-const FadeInOutImage = ({ source }) => {
-  const opacity = useState(new Animated.Value(0))[0];
+// const Stack = createStackNavigator();
 
-  useEffect(() => {
-    Animated.timing(opacity, {
-      toValue: 1,
-      duration: 500,
-      easing: Easing.inOut(Easing.ease),
-      useNativeDriver: true,
-    }).start();
-
-    return () => {
-      opacity.setValue(0); // Reset opacity when component unmounts or source changes
-    };
-  }, [source]); // Reset animation when source changes
-
+export default function App() {
   return (
-    <Animated.View style={{ opacity }}>
-      <Image source={source} style={{ width: '100%', height: '90%', resizeMode: 'cover' }} />
-    </Animated.View>
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="example" component={Example} />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{ tabBarStyle: { display: "none" }, animationEnabled: true}}
+        />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
+}
+const getRouteName = (route) => {
+  const routeName = getFocusedRouteNameFromRoute(route);
 };
 
-const Dot = ({ active }) => (
-  <View style={[styles.dot, active && styles.activeDot]} />
-);
 
-const ShopButton = ({ position }) => (
-  <TouchableOpacity style={[styles.shopButton, styles[position]]}>
-    <Text style={styles.shopButtonText}>SHOP</Text>
-  </TouchableOpacity>
-);
+// https://youtu.be/vPpOZW6preY?si=g-2gHkuFmXxJMFXM
 
-const App = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+// sliding screen 
+// https://youtu.be/A2b85RkuuB4?si=yXoRfTQ-yAwodo-H
+// https://youtu.be/Opu3nfusnMo?si=DaLZeKe_xxA7az49
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 5000); // Change to 10000 for every 10 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleDotPress = (index) => {
-    setCurrentIndex(index);
-  };
-
-  return (
-    <View style={{ flex: 1 }}>
-      <FadeInOutImage source={images[currentIndex].source} />
-      <ShopButton position={images[currentIndex].buttonPosition} />
-      <View style={styles.dotContainer}>
-        {images.map((_, index) => (
-          <TouchableOpacity key={index} onPress={() => handleDotPress(index)}>
-            <Dot active={index === currentIndex} />
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  dotContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: 'gray',
-    marginHorizontal: 5,
-  },
-  activeDot: {
-    backgroundColor: 'black',
-  },
-  shopButton: {
-    position: 'absolute',
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: 'blue',
-  },
-  leftTop: {
-    top: 0,
-    left: 0,
-  },
-  rightTop: {
-    top: 0,
-    right: 0,
-  },
-  leftBottom: {
-    bottom: 0,
-    left: 0,
-  },
-  rightBottom: {
-    bottom: 0,
-    right: 0,
-  },
-  shopButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});
-
-export default App;
+// https://youtu.be/XiutL0uLICg?si=NqTyOBuQcv_r-peV
